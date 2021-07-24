@@ -11,7 +11,7 @@ const authorize = (token) => {
         API.defaults.headers[AUTHORIZATION] = token;
     }
 };
-const token = "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJjMjI0YjIzYy03ZmYxLTRjYTYtYjIzNS0zY2NjNjljZmJlMmMiLCJzdWIiOiJ0ZXN0MTRAbWFpbGluYXRvci5jb21XRUIiLCJpYXQiOjE2MjcxNTc2ODcsImV4cCI6MTYyNzE2MTI4N30.TmqGPHyptSH2z4gCKwjAZbuXb4ZwQ9XiUWAsgb4PJG6aTTbLforL3vFmNDv3nDFFF46EMjHxVBtnpteg7jClKQ"
+const token = "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJkOWVkZjBjZC03MTM2LTQ4ZWMtYTY4MC0wNjc2Y2ZkMjMzMTQiLCJzdWIiOiJ0ZXN0MTRAbWFpbGluYXRvci5jb21XRUIiLCJpYXQiOjE2MjcxNjUzNDAsImV4cCI6MTYyNzE2ODk0MH0.fgu_9DT1ZLjhtFn7ufwYr-3M4QBBNuTqF_Qch6utms5k_wNis9quVslbdYLV-OAi9NEEkeTU9A3yc2Qy_h9mxw"
 const orderUrl = "/user/payment/order"
 const verifyUrl = "/user/payment/verify"
 const rpKey = "rzp_test_CDlmfMs1WmWLhk"
@@ -30,12 +30,12 @@ export const razorpaySlice = createSlice({
         },
         processRazorpay: (state, action) => {
             state.operation = "process_razorpay"
-            state.rporder.paymentId= action.payload.paymentId
-            state.rporder.signature= action.payload.signature
+            state.rporder.responseObject.transactionId= action.payload.paymentId
+            state.rporder.responseObject.pmtSignature= action.payload.signature
         },
         verifyPmt: (state, action) => {
-            state.rporder.paymentId= action.payload.paymentId
-            state.rporder.signature= action.payload.signature
+            state.rporder.responseObject.transactionId= action.payload.paymentId
+            state.rporder.responseObject.pmtSignature= action.payload.signature
         },
         pmtError: (state, action) => {
             console.log(action.payload)
@@ -90,12 +90,10 @@ export const displayRazorPayPanel = (req) => async dispatch => {
             dispatch(verifyBackendOrder(data));
         },
         prefill: {
-            name: "Venky Kandaswamy",
-            email: "SoumyaDey@example.com",
+            name: req.userAbridgedResponse.firstName + " " + req.userAbridgedResponse.lastName,
+            email: req.userAbridgedResponse.primaryEmail,
+            //contact: req.userAbridgedResponse.phoneNumber,
             contact: "8248335667",
-        },
-        notes: {
-            address: "Soumya Dey Corporate Office",
         },
         theme: {
             color: "#3179BE",
