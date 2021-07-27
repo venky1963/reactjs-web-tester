@@ -11,7 +11,7 @@ const authorize = (token) => {
         API.defaults.headers[AUTHORIZATION] = token;
     }
 };
-const token = "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJkOWVkZjBjZC03MTM2LTQ4ZWMtYTY4MC0wNjc2Y2ZkMjMzMTQiLCJzdWIiOiJ0ZXN0MTRAbWFpbGluYXRvci5jb21XRUIiLCJpYXQiOjE2MjcxNjUzNDAsImV4cCI6MTYyNzE2ODk0MH0.fgu_9DT1ZLjhtFn7ufwYr-3M4QBBNuTqF_Qch6utms5k_wNis9quVslbdYLV-OAi9NEEkeTU9A3yc2Qy_h9mxw"
+const token = "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxNDQ5ZmI2ZS05ODg3LTQ2ZWUtYjUwYy04ODdmMmZjMjEzNjMiLCJzdWIiOiJ0ZXN0MTRAbWFpbGluYXRvci5jb21XRUIiLCJpYXQiOjE2Mjc0Mjk0NDYsImV4cCI6MTYyNzQzMzA0Nn0.U-zwQxjwxRsmLL7rin-mJBFo4JC232ovsyna3jztE5xynUq67-w7L2LC63EvC6OQ0bTID2eMMOWuyfZhkiCCLg"
 const orderUrl = "/user/payment/order"
 const verifyUrl = "/user/payment/verify"
 const rpKey = "rzp_test_CDlmfMs1WmWLhk"
@@ -74,8 +74,8 @@ export const displayRazorPayPanel = (req) => async dispatch => {
         name: "Sleekfin India Pvt Ltd",
         description: req.purpose,
         image: "https://www.sleekfin.com/api/v1/document/static/SleekfinRoundLogo.png",
-        order_id: req.order_id,
-        handler: async function (response) {
+        order_id: req.orderId,
+        handler: function (response) {
             if (response.razorpay_payment_id == null) {
                 alert("Payment failed");
                 dispatch(pmtError(response.data))
@@ -84,8 +84,10 @@ export const displayRazorPayPanel = (req) => async dispatch => {
             const data = {
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
-                signature: response.razorpay_signature,
+                signature: response.razorpay_signature
             };
+            alert(response.razorpay_signature);
+            alert(response.razorpay_payment_id);
             dispatch(processRazorpay(data));
             dispatch(verifyBackendOrder(data));
         },
@@ -99,7 +101,6 @@ export const displayRazorPayPanel = (req) => async dispatch => {
             color: "#3179BE",
         },
     };
-
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
 }
